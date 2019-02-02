@@ -17,7 +17,7 @@
   
   
     <meta name="description" content="MRF with Triple Penalty and Label Contexts过程和第二部分类似，只不过，Pairwise-Potential变成了Triple Penalty。即对于DPN，除了Label平滑度量变成了一个可学习的卷积核，还将$k(i,j)$变为了$k(i,z)p^v_z$。这样一来，在Mean-Field推断过程中，
-12q_i(u) \propto exp(-(\...">
+$$q_i(u) \propto exp(-(\...">
   
   <title>Fast Massage Passing and Approximate Inference [ Alex.Tan ]</title>
   
@@ -102,14 +102,14 @@
   <article id="post">
     <h1>Fast Massage Passing and Approximate Inference</h1>
     <p class="page-title-sub">
-      <span id="post-title-date">撰写于 2019-02-02</span>
+      <span id="post-title-date">Created at 2019-02-02</span>
       
-        <span id="post-title-updated">修改于 2019-02-02</span>
+        <span id="post-title-updated">Updated at 2019-02-02</span>
       
       
       
       <span id="post-title-tags">
-      标签
+      Tag
       
       
         
@@ -120,55 +120,60 @@
       
     </p>
     
-    <h3 id="MRF-with-Triple-Penalty-and-Label-Contexts"><a href="#MRF-with-Triple-Penalty-and-Label-Contexts" class="headerlink" title="MRF with Triple Penalty and Label Contexts"></a>MRF with Triple Penalty and Label Contexts</h3><p><strong>过程和第二部分类似</strong>，只不过，Pairwise-Potential变成了Triple Penalty。即对于DPN，除了Label平滑度量变成了一个可学习的卷积核，还将<code>$k(i,j)$</code>变为了<code>$k(i,z)p^v_z$</code>。这样一来，在Mean-Field推断过程中，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">q_i(u) \propto exp(-(\psi_i+\sum_&#123;j \in N_i&#125; \sum_&#123;v&#125;\mu(i,u,j,v)\sum_&#123;z \in N_j&#125;k(j,z)q_z^v ))</span><br></pre></td></tr></table></figure>
-<p>这个不同于以往的，相当于在i，j两个像素之间仅考虑了空间关系，没有考虑像素贴特征的相似度。即：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">q_i(u) \propto exp(-(\psi_i+\sum_&#123;j &#125; \sum_&#123;v&#125;\mu(i,u,j,v)I(j \in N_i)\sum_&#123;z \in N_j&#125;k(j,z)q_z^v ))</span><br></pre></td></tr></table></figure></p>
+    <h3 id="MRF-with-Triple-Penalty-and-Label-Contexts"><a href="#MRF-with-Triple-Penalty-and-Label-Contexts" class="headerlink" title="MRF with Triple Penalty and Label Contexts"></a>MRF with Triple Penalty and Label Contexts</h3><p><strong>过程和第二部分类似</strong>，只不过，Pairwise-Potential变成了Triple Penalty。即对于DPN，除了Label平滑度量变成了一个可学习的卷积核，还将<code>$k(i,j)$</code>变为了$k(i,z)p^v_z$。这样一来，在Mean-Field推断过程中，</p>
+<p>$$q_i(u) \propto exp(-(\psi_i+\sum_{j \in N_i} \sum_{v}\mu(i,u,j,v)\sum_{z \in N_j}k(j,z)q_z^v ))$$</p>
+<p>这个不同于以往的，相当于在i，j两个像素之间仅考虑了空间关系，没有考虑像素贴特征的相似度。即：</p>
+<p>$$q_i(u) \propto exp(-(\psi_i+\sum_{j } \sum_{v}\mu(i,u,j,v)I(j \in N_i)\sum_{z \in N_j}k(j,z)q_z^v ))$$</p>
 <p>！！！！怪不得DPN快呢，观察上面的式子，相当于在一次传播当中，完成了之前两次的Massage-Passing的内容哦。怪不得收敛快好多呢。</p>
 <hr>
 <p>DPN引入了三元惩罚项以及空间标签平滑模块。性能提升了很多。其实，我有点怀疑性能的提升主要是来自于后者。换句话说，去掉三元惩罚项，取而代之的是ConvCRF，效果也是不错的。</p>
-<p>可以说，在CRF推断当中，占据整体复杂度的Dominant的部分的就是Massege Passing。DenseCRF毫无疑问，可以很大程度上考虑到Long-Range Relationship，其模型复杂度也是很大的。<code>$N^2$</code>级别的Pairwise Potential在DenseCRF当中也成为了一个难以逾越的巨大难题。</p>
+<p>可以说，在CRF推断当中，占据整体复杂度的Dominant的部分的就是Massege Passing。DenseCRF毫无疑问，可以很大程度上考虑到Long-Range Relationship，其模型复杂度也是很大的。$N^2$级别的Pairwise Potential在DenseCRF当中也成为了一个难以逾越的巨大难题。</p>
 <p>DenseCRF的近似推断也变得特别麻烦。传统的基于采样的近似推断方法，例如MCMC，往往要推好几个小时。这样的复杂度是我们根本无法接受的。斯坦福的科学家提出了在CCCP框架下基于Mean-Field Approximation的推断方法，结合permutohedral-Lattice，极大地提升了推断效率。让万级别变量的CRF的推断速度从几个小时降低到了几秒钟。</p>
 <p>但是，这个速度在讲求实时性的很多计算机视觉子领域同样是难以接受的。因为往往需要每秒钟处理好几祯的图像，但是CRF却成为了整个系统的瓶颈。例如对于DeepLab V1，如果不加入CRF作为后端，那么往往可以做到8FPS，但是加入了CRF之后，虽然mIoU数值上获得了提升，但是推理速度也降低到了2FPS。很多视觉分割问题，例如自动驾驶，直播视频处理等等，很难容忍这样低的处理速度。因此在最新的视觉分割工作当中，例如DeepLab v3、v3+等，彻底的抛弃了随机场模型。</p>
 <p>深度学习可以很好的挖掘图像的语义属性，因此在图像识别，目标检测等领域获得了巨大的成功。然而，深度学习模型往往会忽略掉原像素空间的特征信息，而像素空间的特征关系往往能对语义分割问题有很好的性能改善，例如获得更清晰的边界信息。随机场模型可以很好的利用到像素特征，从而改善深度学习的分割性能。但是，正如上文所述，随机场模型的推断速度恰恰成为了一个难以跨过的鸿沟，限制了CRF的应用。</p>
 <p>随机场模型的复杂度主要来自于Massage Passing步骤，很多工作对这一步骤进行了很多探索，例如基于permutohedral-Lattice的工作（CRFasRNN）。还有基于条件独立性假设的ConvCRF以及DPN（MMLab的这个工作比UCam的工作早两年）。条件独立性假设就是每一个像素点的Pairwise-Potential仅仅与其邻域内的像素点相作用，不再遵循DenseCRF当中全局连接的准则。再例如，沈春华课题组将Pairwise Potential变成了可学习的组件，整合到了深度网络当中。</p>
 <p>对于标准的MF推断过程，如下所示：</p>
 <ul>
-<li>初始化: <code>$Q_i^{0}=\frac{1}{z_i}exp(-\psi_i)$</code></li>
+<li>初始化: $Q_i^{0}=\frac{1}{z_i}exp(-\psi_i)$</li>
 </ul>
-<p><strong>Do until converged for any label <code>$v$</code>and index <code>$i$</code>:</strong></p>
+<p><strong>Do until converged for any label $v$and index $i$:</strong></p>
 <ul>
-<li>Message-Passing: <code>$Q_i^{(m)}(v)=\sum_{j \neq i}k^{(m)}_{ij}Q_j(v)$</code></li>
-<li>Compatibility transform:<code>$ Q_i(u)=\sum_{v \in L} \mu^{(m)}(u,v)\sum_mw^{(m)}Q_i^{(m))}(v)$</code></li>
-<li>Local update: <code>$Q_i=exp(-\psi_i-Q_i)$</code></li>
-<li>Normalize <code>$Q_i$</code></li>
+<li>Message-Passing: $Q_i^{(m)}(v)=\sum_{j \neq i}k^{(m)}_{ij}Q_j(v)$</li>
+<li>Compatibility transform:$ Q_i(u)=\sum_{v \in L} \mu^{(m)}(u,v)\sum_mw^{(m)}Q_i^{(m))}(v)$</li>
+<li>Local update: $Q_i=exp(-\psi_i-Q_i)$</li>
+<li>Normalize $Q_i$</li>
 </ul>
-<p>注意在CRF-RNN那篇文里面，人家没有推导错误，是<code>$U_i=- \psi(i)$</code>。</p>
-<p>这里首先进行Message-Passing。 对于ConvCRF而言，也是首先进行这一步骤，只是在条件独立假设下， <code>$Q_i^{(m)}(l)=\sum_{j \in N_i}k^{(m)}_{ij}Q_j(l)$</code> 这里<code>$N_i$</code>表示变量（像素点）i的邻域。如果邻域是方形的，那么这一步的操作显然是一个类似卷积的操作，一个跨通道的卷积核在Probability-Map上进行滑动，只不过滑动方向不是x和y轴，而是在跨通道的同一个位置，（这里的通道数等于class数目）。这里绝大多数时间均消耗在了数据重组上面，适当的代码优化可以获得10-fold的速度提升。</p>
+<p>注意在CRF-RNN那篇文里面，人家没有推导错误，是$U_i=- \psi(i)$。</p>
+<p>这里首先进行Message-Passing。 对于ConvCRF而言，也是首先进行这一步骤，只是在条件独立假设下， $Q_i^{(m)}(l)=\sum_{j \in N_i}k^{(m)}_{ij}Q_j(l)$ 这里$N_i$表示变量（像素点）i的邻域。如果邻域是方形的，那么这一步的操作显然是一个类似卷积的操作，一个跨通道的卷积核在Probability-Map上进行滑动，只不过滑动方向不是x和y轴，而是在跨通道的同一个位置，（这里的通道数等于class数目）。这里绝大多数时间均消耗在了数据重组上面，适当的代码优化可以获得10-fold的速度提升。</p>
 <ul>
-<li>初始化: <code>$Q_i^{0}=\frac{1}{z_i}exp(-\psi_i)$</code></li>
+<li>初始化: $Q_i^{0}=\frac{1}{z_i}exp(-\psi_i)$</li>
 </ul>
-<p><strong>Do until converged for any label <code>$v$</code>and index <code>$i$</code>:</strong></p>
+<p><strong>Do until converged for any label $v$and index $i$:</strong></p>
 <ul>
-<li>Message-Passing: <code>$Q_i^{(m)}(v)=\sum_{j \in N_i}k^{(m)}_{ij}Q_j(v)$</code></li>
-<li>Compatibility transform:<code>$ Q_i(u)=\sum_{v \in L} \mu^{(m)}(u,v)\sum_mw^{(m)}Q_i^{(m))}(v)$</code></li>
-<li>Local update: <code>$Q_i=exp(-\psi_i-Q_i)$</code></li>
-<li>Normalize <code>$Q_i$</code></li>
+<li>Message-Passing: $Q_i^{(m)}(v)=\sum_{j \in N_i}k^{(m)}_{ij}Q_j(v)$</li>
+<li>Compatibility transform:$ Q_i(u)=\sum_{v \in L} \mu^{(m)}(u,v)\sum_mw^{(m)}Q_i^{(m))}(v)$</li>
+<li>Local update: $Q_i=exp(-\psi_i-Q_i)$</li>
+<li>Normalize $Q_i$</li>
 </ul>
 <hr>
 <h3 id="MRF-with-Pairwise-Penalty-and-Label-Contexts"><a href="#MRF-with-Pairwise-Penalty-and-Label-Contexts" class="headerlink" title="MRF with Pairwise-Penalty and Label Contexts"></a>MRF with Pairwise-Penalty and Label Contexts</h3><hr>
-<p>`而对于DPN，这里就变得稍微复杂了一些。在考虑DPN之前，我们首先考虑一种特殊情况（中间过渡情况）</p>
+<p>而对于DPN，这里就变得稍微复杂了一些。在考虑DPN之前，我们首先考虑一种特殊情况（中间过渡情况）</p>
 <p>对于传统CRF，包括ConvCRF，他们定义的势能表达式都是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">E(X|I)=\sum_i \psi_i +\sum_&#123;ij&#125;\phi_&#123;ij&#125;</span><br><span class="line"></span><br><span class="line">= \sum_i \psi_i(x)+\sum_&#123;ij&#125;\mu(u,v)k(i,j)</span><br></pre></td></tr></table></figure>
-<p>变分推断结果可以表示为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">q_i(u) \propto exp(-(\psi_i+\sum_&#123;j \neq i&#125; \sum_&#123;v&#125;\phi_&#123;i,j&#125;^&#123;u,v&#125;q_j^v))</span><br></pre></td></tr></table></figure></p>
-<p>对于DPN，MMLab将Label平滑度量变成了一个可学习的卷积核，认为Label存在空间可推理关系，变成了<code>$\mu(i,u,j,v)$</code>的形式。也就是说，DPN默认势能表达形式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">E(X|I)=\sum_i \psi_i +\sum_&#123;i&#125; \sum_&#123;j \in N_i&#125;\phi_&#123;ij&#125;</span><br><span class="line"></span><br><span class="line">= \sum_i \psi_i(x)+\sum_&#123;ij&#125;\mu(i,u,j,v)k(i,j)</span><br></pre></td></tr></table></figure></p>
+<p>$$E(X|I)=\sum_i \psi_i +\sum_{ij}\phi_{ij}$$</p>
+<p>$$= \sum_i \psi_i(x)+\sum_{ij}\mu(u,v)k(i,j)$$</p>
+<p>变分推断结果可以表示为：</p>
+<p>$$q_i(u) \propto exp(-(\psi_i+\sum_{j \neq i} \sum_{v}\phi_{i,j}^{u,v}q_j^v))$$</p>
+<p>对于DPN，MMLab将Label平滑度量变成了一个可学习的卷积核，认为Label存在空间可推理关系，变成了$\mu(i,u,j,v)$的形式。也就是说，DPN默认势能表达形式为：</p>
+<p>$$E(X|I)=\sum_i \psi_i +\sum_{i} \sum_{j \in N_i}\phi_{ij}$$</p>
+<p>$$= \sum_i \psi_i(x)+\sum_{ij}\mu(i,u,j,v)k(i,j)$$</p>
 <p>这样一来，在Mean-Field推断过程中，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">q_i(u) \propto exp(-(\psi_i+\sum_&#123;j \in N_i&#125; \sum_&#123;v&#125;\mu(i,u,j,v)k(i,j)q_j^v ))</span><br></pre></td></tr></table></figure>
-<p>由于<code>$\mu(i,u,j,v)$</code>已经不再和index独立，因此，推断步骤当中不能再将Compatibility transform和Message-Passing分开进行了。一共需要21*21个<code>$\mu$</code>卷积核，每一个用于记录两个类别标签之间的潜在的空间可推理关系，例如人在摩托车上方，椅子不太可能出现在房顶上。</p>
-<p><code>$\mu$</code>卷积核和k卷积核不同，u卷积核在一张特征图上共享即<code>$\mu(i,c)=\mu(j,c)$</code>。因此我们表示为<code>$\mu_{n,m}$</code>，即当前第n个(class)通道对应是前一层第m个通道(class)的卷积核。</p>
-<p>k卷积核则是跨特征图（通道）在同一个位置共享，即<code>$k(i,c_1)=k(i,c_n)$</code>，c是通道编号，i是位置编号。因此我们表示为<code>k_{i}$</code>，即当前第i个位置对应的卷积核。</p>
-<p>在推断过程中，二者需要做一个点乘，构成一个新的k卷积核，k由于和<code>$\mu$</code>点乘之后，不再是跨通道相等了。也就是说，假如输入特征图编号为m，我们在计算本层第n张图上第i个位置对应的卷积核为，<code>$k_{n,m}(i)=k(i)* \mu_{n,m}$</code></p>
+<p>$$q_i(u) \propto exp(-(\psi_i+\sum_{j \in N_i} \sum_{v}\mu(i,u,j,v)k(i,j)q_j^v ))$$</p>
+<p>由于$\mu(i,u,j,v)$已经不再和index独立，因此，推断步骤当中不能再将Compatibility transform和Message-Passing分开进行了。一共需要21*21个$\mu$卷积核，每一个用于记录两个类别标签之间的潜在的空间可推理关系，例如人在摩托车上方，椅子不太可能出现在房顶上。</p>
+<p>$\mu $卷积核和k卷积核不同，u卷积核在一张特征图上共享即$\mu(i,c)=\mu(j,c)$。因此我们表示为$\mu_{n,m}$，即当前第n个(class)通道对应是前一层第m个通道(class)的卷积核。</p>
+<p>k卷积核则是跨特征图（通道）在同一个位置共享，即$k(i,c_1)=k(i,c_n)$，c是通道编号，i是位置编号。因此我们表示为k_{i}$，即当前第i个位置对应的卷积核。</p>
+<p>在推断过程中，二者需要做一个点乘，构成一个新的k卷积核，k由于和$\mu$点乘之后，不再是跨通道相等了。也就是说，假如输入特征图编号为m，我们在计算本层第n张图上第i个位置对应的卷积核为，$k_{n,m}(i)=k(i)* \mu_{n,m}$</p>
 <ul>
-<li>初始化: <code>$Q_i^{0}=\frac{1}{z_i}exp(-\psi_i)$</code></li>
+<li>初始化: $Q_i^{0}=\frac{1}{z_i}exp(-\psi_i)$</li>
 </ul>
 <p><strong>Do until converged for any label <code>$v$</code>and index <code>$i$</code>:</strong></p>
 <ul>
@@ -189,10 +194,10 @@
 
   </article>
   <div class="random-toc-area">
-  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
-  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">Show TOC</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">Hide TOC</button>
   <div class="random-toc">
-    <h2>目录</h2>
+    <h2>Table of Content</h2>
     <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#MRF-with-Triple-Penalty-and-Label-Contexts"><span class="toc-text">MRF with Triple Penalty and Label Contexts</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MRF-with-Pairwise-Penalty-and-Label-Contexts"><span class="toc-text">MRF with Pairwise-Penalty and Label Contexts</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MRF-with-Triple-Penalty-and-Label-Contexts-1"><span class="toc-text">MRF with Triple Penalty and Label Contexts</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#Deep-Massage-Passing-Nets"><span class="toc-text">Deep Massage Passing Nets</span></a>
   </li></div>
 </div>
@@ -204,7 +209,7 @@
   
 
   
-    <a href="/2019/02/02/hello-world/" class="next">下一篇 Hello World &rarr;</a>
+    <a href="/2019/02/02/hello-world/" class="next">Next post Hello World &rarr;</a>
   
 </nav>
 
