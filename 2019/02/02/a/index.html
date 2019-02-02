@@ -20,8 +20,10 @@
 a+n=2
 sqrt()sqrt()
 sqrt()
+f([\frac{1+\{x,y\}}{(\frac{x}{y}+\frac{y}{x})(u+1)}+a]^{3\2})
+
  MRF with Triple Penalty and Label Contexts
-过程和第二部分类似，只不过，Pairwise-Potential变成了Triple Penalty。即对于DPN，除了Label平滑度量变成了一个可学习的卷积核，还将$k(i,j)$变为了k(i,z)pzvk(i,z)p^v_zk...">
+过程和第二部分类似，只不过，Pairwise-Potential变成了Triple Penalty。即对...">
   
   <title>Fast Massage Passing and Approximate Inference [ Alex.Tan ]</title>
   
@@ -106,14 +108,14 @@ sqrt()
   <article id="post">
     <h1>Fast Massage Passing and Approximate Inference</h1>
     <p class="page-title-sub">
-      <span id="post-title-date">撰写于 2019-02-02</span>
+      <span id="post-title-date">Created at 2019-02-02</span>
       
-        <span id="post-title-updated">修改于 2019-02-02</span>
+        <span id="post-title-updated">Updated at 2019-02-02</span>
       
       
       
       <span id="post-title-tags">
-      标签
+      Tag
       
       
         
@@ -128,6 +130,9 @@ sqrt()
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">a</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span></span></span></span></span></p>
 <p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi><mi>q</mi><mi>r</mi><mi>t</mi><mo>(</mo><mo>)</mo></mrow><annotation encoding="application/x-tex">sqrt()
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">t</span><span class="mopen">(</span><span class="mclose">)</span></span></span></span></span></p>
+<p class="katex-block katex-error" title="ParseError: KaTeX parse error: Undefined control sequence: \2 at position 58: …x})(u+1)}+a]^{3\̲2̲})
+">f([\frac{1+\{x,y\}}{(\frac{x}{y}+\frac{y}{x})(u+1)}+a]^{3\2})
+</p>
 <h3 id="mrf-with-triple-penalty-and-label-contexts"><a class="markdownIt-Anchor" href="#mrf-with-triple-penalty-and-label-contexts"></a> MRF with Triple Penalty and Label Contexts</h3>
 <p><strong>过程和第二部分类似</strong>，只不过，Pairwise-Potential变成了Triple Penalty。即对于DPN，除了Label平滑度量变成了一个可学习的卷积核，还将<code>$k(i,j)$</code>变为了<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi><mo>(</mo><mi>i</mi><mo separator="true">,</mo><mi>z</mi><mo>)</mo><msubsup><mi>p</mi><mi>z</mi><mi>v</mi></msubsup></mrow><annotation encoding="application/x-tex">k(i,z)p^v_z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mopen">(</span><span class="mord mathdefault">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.04398em;">z</span><span class="mclose">)</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.04398em;">z</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03588em;">v</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span></span></span></span>。这样一来，在Mean-Field推断过程中，</p>
 <p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>q</mi><mi>i</mi></msub><mo>(</mo><mi>u</mi><mo>)</mo><mo>∝</mo><mi>e</mi><mi>x</mi><mi>p</mi><mo>(</mo><mo>−</mo><mo>(</mo><msub><mi>ψ</mi><mi>i</mi></msub><mo>+</mo><munder><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><msub><mi>N</mi><mi>i</mi></msub></mrow></munder><munder><mo>∑</mo><mi>v</mi></munder><mi>μ</mi><mo>(</mo><mi>i</mi><mo separator="true">,</mo><mi>u</mi><mo separator="true">,</mo><mi>j</mi><mo separator="true">,</mo><mi>v</mi><mo>)</mo><munder><mo>∑</mo><mrow><mi>z</mi><mo>∈</mo><msub><mi>N</mi><mi>j</mi></msub></mrow></munder><mi>k</mi><mo>(</mo><mi>j</mi><mo separator="true">,</mo><mi>z</mi><mo>)</mo><msubsup><mi>q</mi><mi>z</mi><mi>v</mi></msubsup><mo>)</mo><mo>)</mo></mrow><annotation encoding="application/x-tex">q_i(u) \propto exp(-(\psi_i+\sum_{j \in N_i} \sum_{v}\mu(i,u,j,v)\sum_{z \in N_j}k(j,z)q_z^v ))
@@ -235,10 +240,10 @@ f_Y(y) &amp; = f_X[h(y)]|h&#x27;(y)| \\[2ex]
 
   </article>
   <div class="random-toc-area">
-  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
-  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">Show TOC</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">Hide TOC</button>
   <div class="random-toc">
-    <h2>目录</h2>
+    <h2>Table of Content</h2>
     <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#mrf-with-triple-penalty-and-label-contexts"><span class="toc-text"> MRF with Triple Penalty and Label Contexts</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mrf-with-pairwise-penalty-and-label-contexts"><span class="toc-text"> MRF with Pairwise-Penalty and Label Contexts</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mrf-with-triple-penalty-and-label-contexts-2"><span class="toc-text"> MRF with Triple Penalty and Label Contexts</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#fuck-dddddddddddddd"><span class="toc-text"> fuck     dddddddddddddd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#deep-massage-passing-nets"><span class="toc-text"> Deep Massage Passing Nets</span></a>
   </li></div>
 </div>
@@ -250,7 +255,7 @@ f_Y(y) &amp; = f_X[h(y)]|h&#x27;(y)| \\[2ex]
   
 
   
-    <a href="/2019/02/02/hello-world/" class="next">下一篇 Hello World &rarr;</a>
+    <a href="/2019/02/02/hello-world/" class="next">Next post Hello World &rarr;</a>
   
 </nav>
 
