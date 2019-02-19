@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Alex.Tan">
 <meta property="og:description" content="$$lim_{1\to+\infty}P(|\frac{1}{n}\sum_i^nX_i-\mu|&amp;lt;\epsilon)=1, i=1,…,n$$ $ a+n_h=2 $$a+n_h=2$ $$ a+n_h=2 $$ sssss$a+n_j=2$ $a+b_n$ a+b_n sssssssssssssssssssssssssssssssssssssssssssss $$sqrt()$$ $$f">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-02-19T10:36:48.765Z">
+<meta property="og:updated_time" content="2019-02-19T10:41:45.294Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="fuckCCP">
 <meta name="twitter:description" content="$$lim_{1\to+\infty}P(|\frac{1}{n}\sum_i^nX_i-\mu|&amp;lt;\epsilon)=1, i=1,…,n$$ $ a+n_h=2 $$a+n_h=2$ $$ a+n_h=2 $$ sssss$a+n_j=2$ $a+b_n$ a+b_n sssssssssssssssssssssssssssssssssssssssssssss $$sqrt()$$ $$f">
@@ -170,7 +170,6 @@
 <p>这个不同于以往的，相当于在i，j两个像素之间仅考虑了空间关系，没有考虑像素贴特征的相似度。即：</p>
 <p>$$q_i(u) \propto exp(-(\psi_i+\sum_{j } \sum_{v}\mu(i,u,j,v)I(j \in N_i)\sum_{z \in N_j}k(j,z)q_z^v ))$$</p>
 <p>！！！！怪不得DPN快呢，观察上面的式子，相当于在一次传播当中，完成了之前两次的Massage-Passing的内容哦。怪不得收敛快好多呢。</p>
-<hr>
 <p>DPN引入了三元惩罚项以及空间标签平滑模块。性能提升了很多。其实，我有点怀疑性能的提升主要是来自于后者。换句话说，去掉三元惩罚项，取而代之的是ConvCRF，效果也是不错的。</p>
 <p>可以说，在CRF推断当中，占据整体复杂度的Dominant的部分的就是Massege Passing。DenseCRF毫无疑问，可以很大程度上考虑到Long-Range Relationship，其模型复杂度也是很大的。$N^2$级别的Pairwise Potential在DenseCRF当中也成为了一个难以逾越的巨大难题。</p>
 <p>DenseCRF的近似推断也变得特别麻烦。传统的基于采样的近似推断方法，例如MCMC，往往要推好几个小时。这样的复杂度是我们根本无法接受的。斯坦福的科学家提出了在CCCP框架下基于Mean-Field Approximation的推断方法，结合permutohedral-Lattice，极大地提升了推断效率。让万级别变量的CRF的推断速度从几个小时降低到了几秒钟。</p>
@@ -200,9 +199,7 @@
 <li>Local update: $Q_i=exp(-\psi_i-Q_i)$</li>
 <li>Normalize $Q_i$</li>
 </ul>
-<hr>
-<h3 id="MRF-with-Pairwise-Penalty-and-Label-Contexts"><a href="#MRF-with-Pairwise-Penalty-and-Label-Contexts" class="headerlink" title="MRF with Pairwise-Penalty and Label Contexts"></a>MRF with Pairwise-Penalty and Label Contexts</h3><hr>
-<p>而对于DPN，这里就变得稍微复杂了一些。在考虑DPN之前，我们首先考虑一种特殊情况（中间过渡情况）</p>
+<h3 id="MRF-with-Pairwise-Penalty-and-Label-Contexts"><a href="#MRF-with-Pairwise-Penalty-and-Label-Contexts" class="headerlink" title="MRF with Pairwise-Penalty and Label Contexts"></a>MRF with Pairwise-Penalty and Label Contexts</h3><p>而对于DPN，这里就变得稍微复杂了一些。在考虑DPN之前，我们首先考虑一种特殊情况（中间过渡情况）</p>
 <p>对于传统CRF，包括ConvCRF，他们定义的势能表达式都是：</p>
 <p>$$E(X|I)=\sum_i \psi_i +\sum_{ij}\phi_{ij}$$</p>
 <p>$$= \sum_i \psi_i(x)+\sum_{ij}\mu(u,v)k(i,j)$$</p>
@@ -227,16 +224,15 @@
 <li>Normalize <code>$Q_i$</code></li>
 </ul>
 <p>DPN文中将<code>$w^m$</code>的变成了跨通道max-pooling。</p>
-<hr>
-<h3 id="MRF-with-Triple-Penalty-and-Label-Contexts-1"><a href="#MRF-with-Triple-Penalty-and-Label-Contexts-1" class="headerlink" title="MRF with Triple Penalty and Label Contexts"></a>MRF with Triple Penalty and Label Contexts</h3><hr>
-<p>过程和上述类似，只不过，Pairwise-Potential变成了Triple Penalty。即对于DPN，除了Label平滑度量变成了一个可学习的卷积核，还将<code>$k(i,j)$</code>变为了<code>$k(i,z)p^v_z$</code>。这样一来，在Mean-Field推断过程中，</p>
+<h3 id="MRF-with-Triple-Penalty-and-Label-Contexts-1"><a href="#MRF-with-Triple-Penalty-and-Label-Contexts-1" class="headerlink" title="MRF with Triple Penalty and Label Contexts"></a>MRF with Triple Penalty and Label Contexts</h3><p>过程和上述类似，只不过，Pairwise-Potential变成了Triple Penalty。即对于DPN，除了Label平滑度量变成了一个可学习的卷积核，还将<code>$k(i,j)$</code>变为了<code>$k(i,z)p^v_z$</code>。这样一来，在Mean-Field推断过程中，</p>
 <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">q_i(u) \propto exp(-(\psi_i+\sum_&#123;j \in N_i&#125; \sum_&#123;v&#125;\mu(i,u,j,v)\sum_&#123;z \in N_j&#125;k(j,z)q_z^v ))</span><br></pre></td></tr></table></figure>
 <p>这个不同于以往的，相当于在i，j两个像素之间仅考虑了空间关系，没有考虑像素贴特征的相似度。即：<br><figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">q_i(u) \propto exp(-(\psi_i+\sum_&#123;j &#125; \sum_&#123;v&#125;\mu(i,u,j,v)I(j \in N_i)\sum_&#123;z \in N_j&#125;k(j,z)q_z^v ))</span><br></pre></td></tr></table></figure></p>
 <p>！！！！怪不得DPN快呢，观察上面的式子，相当于在一次传播当中，完成了之前两次的Massage-Passing的内容哦。怪不得收敛快好多呢。</p>
 <p>$$<br>\begin{aligned}<br>f_Y(y) &amp; = f_X[h(y)]|h’(y)| \[2ex]<br>&amp; = f_X[h(y)]h’(y) \[2ex]<br>&amp; = \frac{1}{\theta}e^{-\frac{x}{\theta}}[\frac{dx}{dy}(-\frac{\theta}{ln(1-y)})] \[2ex]<br>&amp; = \frac{1}{\theta}e^{-\frac{-\frac{\theta}{ln(1-y)}}{\theta}}\frac{\theta}{1-y} \[2ex]<br>&amp; = \frac{1}{\theta}e^{ln(1-y)}\frac{\theta}{1-y} \[2ex]<br>&amp; = \frac{1-y}{\theta}\frac{\theta}{1-y} \[2ex]<br>&amp; = 1<br>\end{aligned}<br>$$</p>
-<h2 id="fuck-dddddddddddddd"><a href="#fuck-dddddddddddddd" class="headerlink" title="fuck     dddddddddddddd"></a>fuck     dddddddddddddd</h2><p>$$<br>\begin{eqnarray}<br>\nabla\cdot\vec{E} &amp;=&amp; \frac{\rho}{\epsilon_0} \<br>\nabla\cdot\vec{B} &amp;=&amp; 0 \<br>\nabla\times\vec{E} &amp;=&amp; -\frac{\partial B}{\partial t} \<br>\nabla\times\vec{B} &amp;=&amp; \mu_0\left(\vec{J}+\epsilon_0\frac{\partial E}{\partial t} \right)<br>\end{eqnarray}<br>$$</p>
-<hr>
-<h2 id="Deep-Massage-Passing-Nets"><a href="#Deep-Massage-Passing-Nets" class="headerlink" title="Deep Massage Passing Nets"></a>Deep Massage Passing Nets</h2><p>很多东西总结的很到位，例如：传统方法都是基于learned-Potential+迭代推断，而利用一个优化后的网络直接去学习这种转播当中的massage可以摆脱上述框架。事实证明，效果上还是不错的。CNN不再是产生rough-prediction，而是产生概率图中每个变量节点所对应的特征向量。近似推断所需要的多次迭代则被参数化到了另一个网络当中。直接预测Massage不是沈春华课题组的原创，之前CMU-IR尝试过直接预测Variable2Factor，这个貌似需要的输出节点非常多？</p>
+<p>fuck     dddddddddddddd</p>
+<p>$$<br>\begin{eqnarray}<br>\nabla\cdot\vec{E} &amp;=&amp; \frac{\rho}{\epsilon_0} \<br>\nabla\cdot\vec{B} &amp;=&amp; 0 \<br>\nabla\times\vec{E} &amp;=&amp; -\frac{\partial B}{\partial t} \<br>\nabla\times\vec{B} &amp;=&amp; \mu_0\left(\vec{J}+\epsilon_0\frac{\partial E}{\partial t} \right)<br>\end{eqnarray}<br>$$</p>
+<p>Deep Massage Passing Nets</p>
+<p>很多东西总结的很到位，例如：传统方法都是基于learned-Potential+迭代推断，而利用一个优化后的网络直接去学习这种转播当中的massage可以摆脱上述框架。事实证明，效果上还是不错的。CNN不再是产生rough-prediction，而是产生概率图中每个变量节点所对应的特征向量。近似推断所需要的多次迭代则被参数化到了另一个网络当中。直接预测Massage不是沈春华课题组的原创，之前CMU-IR尝试过直接预测Variable2Factor，这个貌似需要的输出节点非常多？</p>
 <p>直接预测Potential是需要<code>$K^a$</code>的输出个数的。而Variable2Factor则需要计算这个potential，直接导致参数量激增。不太划算，例如pairwise-potential需要<code>$K^2$</code>的输出，还记得U矩阵吗？</p>
 
         </div>
